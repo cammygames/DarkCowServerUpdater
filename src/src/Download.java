@@ -49,8 +49,8 @@ public class Download {
 	
 	
 	 
-	 	//String serverName,String user,String pass,String file
-	    public static void DownloadFromFtp() throws Exception 
+	 	
+	    public static void DownloadFromFtp(String user,String pass,String host, String src,String des) throws Exception 
 	    {
 	    	String  server = "frs.sourceforge.net";
 	    	String  userName = "user";
@@ -81,15 +81,13 @@ public class Download {
 	    	System .out.println("File downloaded.");
 	 
 	    }
-	    public static void SFTPDownload() {
+	    public static void SFTPDownload(String user,String pass,String host, String src,String des,String fileName) {
 	    	 JSch jsch = new JSch();
 	         Session session = null;
-	         String user = "user";//Like i would leave this here after testing
-	         String pass = "pass";
-	         String site = "frs.sourceforge.net";
+	         //String site = "frs.sourceforge.net";
 	         try {
-	        	 System.out.println("Downloading");
-	             session = jsch.getSession(user, site, 22);
+	        	 System.out.println("Downloading from "+src);
+	             session = jsch.getSession(user, host, 22);
 	             session.setConfig("StrictHostKeyChecking", "no");
 	             session.setPassword(pass);
 	             session.connect();
@@ -97,11 +95,11 @@ public class Download {
 	             Channel channel = session.openChannel("sftp");
 	             channel.connect();
 	             ChannelSftp sftpChannel = (ChannelSftp) channel;
-	             sftpChannel.cd("/home/frs/project/uemodpack/SteamPower/");
-	             sftpChannel.get("MC.exe", "C:/Users/Rseifert/Desktop/MC.exe");
+	             sftpChannel.cd(src);
+	             sftpChannel.get(fileName, des+fileName);
 	             sftpChannel.exit();
 	             session.disconnect();
-	             System.out.println("Download Finished");
+	             System.out.println("Downloaded "+ fileName);
 	         } catch (JSchException e) {
 	             e.printStackTrace();  
 	         } catch (SftpException e) {
