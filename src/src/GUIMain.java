@@ -3,6 +3,9 @@ package src;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -12,6 +15,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -28,14 +32,14 @@ public class GUIMain extends JFrame implements ActionListener {
 	public int disCount = 0;
 	Icon updateB = new ImageIcon(getClass().getResource("update.png"));
 	Icon hovUpdateB = new ImageIcon(getClass().getResource("hovupdate.png"));
+	Image background = new ImageIcon(getClass().getResource("hovupdate.png")).getImage();
 	private static final long serialVersionUID = 2696364157973172973L;
 	public GUIMain()
 	{
 		super("UE Mod Downloader");
 		setDefaultLookAndFeelDecorated(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(800,600);
-		setVisible(true);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		this.setResizable(false);
 		this.setLayout(null);
 		this.setBackground(Color.BLACK);
@@ -56,7 +60,15 @@ public class GUIMain extends JFrame implements ActionListener {
 		addButton(Down,660, 530, 20, 40);
 		repaint();
 		
+		setSize(800,600);
+		setVisible(true);
 		
+	}
+	@Override
+	public void paint(Graphics g)
+	{
+	// Draw the previously loaded image to Component.
+	g.drawImage(background, 0, 0, null);
 	}
 	private void adjDisplay()
 	{
@@ -102,7 +114,7 @@ public class GUIMain extends JFrame implements ActionListener {
 			}
 			if(event.getSource() == Up)
 			{
-				if(disCount < disList.size())
+				if(disCount+6 < disList.size())
 				{
 					disCount++;
 					adjDisplay();
@@ -110,7 +122,7 @@ public class GUIMain extends JFrame implements ActionListener {
 			}
 			if(event.getSource() == Down)
 			{
-				if(disCount >6)
+				if(disCount >0)
 				{
 					disCount--;
 					adjDisplay();
