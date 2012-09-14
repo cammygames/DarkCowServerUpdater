@@ -24,9 +24,12 @@ public static String updateURl = "https://dl.dropbox.com/u/70622753/updater/ModL
 public static List<File> modsStored = new ArrayList<File>();
 public static List<File> jarMods = new ArrayList<File>();
 public static List<File> installedMods = new ArrayList<File>();
+public static List<String> errors = new ArrayList<String>();
+
 public static File mc = null;
 public static File currentMc = null;
-public static List<String> errors = new ArrayList<String>();
+public static File modList = new File(updaterDir+"/ModList.list");
+public static File oldList = new File(updaterDir+"/ModList.list.backup");
 public static boolean rootFileCheck()
 {
 	
@@ -102,11 +105,9 @@ public static boolean rootFileCheck()
 public static boolean updateList()
 {
 	//Download mod list
-	File modList = new File(FileManager.updaterDir+"/ModList.list");
-	File oldList = new File(FileManager.updaterDir+"/ModList.list.backup");
 	if(modList.exists())
 	{
-		System.out.print("Backing up mod List");
+		System.out.print("Backing up mod List\n");
 		try {
 			if(oldList.exists())
 			{
@@ -116,7 +117,7 @@ public static boolean updateList()
 			oldList = modList;
 			if(cc)
 			{
-				System.out.print("Downloading mod List");
+				System.out.print("Downloading mod List \n");
 				File NmodList = Download.downloadFromUrl(updateURl, FileManager.updaterDir, "ModList.list");
 				if(NmodList != null)
 				{
@@ -126,8 +127,8 @@ public static boolean updateList()
 				}
 				else
 				{
-					System.out.print("Failed to get list");
-					System.out.print("restoring old list");
+					System.out.print("Failed to get list\n");
+					System.out.print("restoring old list\n");
 					oldList.renameTo(new File(FileManager.updaterDir+"/ModList.list"));
 					modList = oldList;
 					
@@ -136,6 +137,17 @@ public static boolean updateList()
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	else
+	{
+		System.out.print("No Mod List");
+		File NmodList = Download.downloadFromUrl(updateURl, FileManager.updaterDir, "ModList.list");
+		if(NmodList != null)
+		{
+			modList = NmodList;
+			System.out.print("Downloaded new list \n");
+			return true;
 		}
 	}
 	return false;

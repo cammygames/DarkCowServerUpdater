@@ -13,11 +13,11 @@ public static String[][] ModList = new String[50][4];
 public static List<String> debug =  new ArrayList<String>();
 	public static boolean ProcessorUpdateList()
 	{
-		File list = FileManager.fileExist(FileManager.dir, "ModList.list");
+		File list = FileManager.modList;
 		if(list != null)
 		{
 			try {
-				List<String> mods = FileWriter.readSmallTextFile(FileManager.updaterDir+ "ModList.list");
+				List<String> mods = FileWriter.readSmallTextFile(FileManager.updaterDir+ "/ModList.list");
 				//turns the list into usable info
 				for(int i = 0; i<mods.size();i++)
 				{

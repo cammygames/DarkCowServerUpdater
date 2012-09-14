@@ -126,7 +126,7 @@ public class GUIMain extends JFrame implements ActionListener {
 					
 					if(FileManager.errors.size() > 0)
 					{
-						addToConsole("Main file check cleared with errors:");
+						addToConsole("Main file check Debug:");
 						for(int i = 0; i < FileManager.errors.size(); i++)
 						{
 							addToConsole("   "+FileManager.errors.get(i));
@@ -165,7 +165,7 @@ public class GUIMain extends JFrame implements ActionListener {
 					addToConsole("Critical:Main file check failed");
 					if(FileManager.errors.size() > 0)
 					{
-						addToConsole("Failure errors:");
+						addToConsole("Main File Check Debug:");
 						for(int i = 0; i < FileManager.errors.size(); i++)
 						{
 							addToConsole("   "+FileManager.errors.get(i));
@@ -184,7 +184,7 @@ public class GUIMain extends JFrame implements ActionListener {
 			}
 			if(event.getSource() == Down)
 			{
-				if(disCount >0)
+				if(disList[disCount+2] !=null)
 				{
 					disCount++;
 					adjDisplay();
