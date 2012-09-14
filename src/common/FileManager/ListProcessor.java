@@ -14,7 +14,7 @@ public static List<String> debug =  new ArrayList<String>();
 	public static boolean ProcessorUpdateList()
 	{
 		File list = FileManager.modList;
-		if(list != null)
+		if(list != null && list.exists())
 		{
 			try {
 				List<String> mods = FileWriter.readSmallTextFile(FileManager.updaterDir+ "/ModList.list");
@@ -90,16 +90,20 @@ public static List<String> debug =  new ArrayList<String>();
 						}
 					}
 				}
-				
+				boolean modRemoved = false;
+				//Need to run cleanup more than once to get all files
+				for(int red = 0; red < 5; red++)
+				{
 				//add all remaining mods to the extra mod list for processing
 				for(int b = 0; b < installedMods.size(); b++)
 				{
-					String s = installedMods.get(b).toString();
-					extraMods.add(s.substring(0,installedMods.toString().lastIndexOf('/')));
+					String s = installedMods.get(b).getName();
+					extraMods.add(s);
 					installedMods.remove(b);
+					debug.add("Extra File: " + s);
 				}
 				//now time to remove extra mods from mods folder, these are most likely old mod versions
-				boolean modRemoved = false;
+				
 				for(int o = 0; 0 < extraMods.size(); o++)
 				{
 					//same process as installing mod but it will delete the mod when its done
@@ -111,7 +115,7 @@ public static List<String> debug =  new ArrayList<String>();
 						{
 							extraMods.remove(i);
 							oldMod.delete();
-							debug.add("File " + extraMods.get(i)+" Removed from mods folder");
+							debug.add("File Removed");
 							modRemoved = true;
 						}
 						else
@@ -121,11 +125,12 @@ public static List<String> debug =  new ArrayList<String>();
 							{
 								extraMods.remove(i);
 								oldMod.delete();
-								debug.add("File " + extraMods.get(i)+" Removed from mods folder");
+								debug.add("File Removed");
 								modRemoved = false;
 							}
 						}
 					}
+				}
 				}
 				if(modRemoved)
 				{

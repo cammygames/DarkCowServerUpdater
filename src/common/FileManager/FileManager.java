@@ -111,27 +111,24 @@ public static boolean updateList()
 		try {
 			if(oldList.exists())
 			{
-			Boolean delc = FileManager.deleteFile(FileManager.updaterDir, "/ModList.list.backup", false);
+				Boolean delc = FileManager.deleteFile(FileManager.updaterDir, "/ModList.list.backup", false);
 			}
-			Boolean cc = FileManager.copyFile(modList,new File(modList+".backup"));
-			oldList = modList;
+				Boolean cc = FileManager.copyFile(modList,new File(modList+".backup"));
 			if(cc)
 			{
 				System.out.print("Downloading mod List \n");
-				File NmodList = Download.downloadFromUrl(updateURl, FileManager.updaterDir, "ModList.list");
-				if(NmodList != null)
+				File NmodList = Download.downloadFromUrl(updateURl, FileManager.updaterDir, "/ModList.list");
+				if(NmodList != null && NmodList.exists())
 				{
 					modList = NmodList;
-					System.out.print("Downloaded new list");
+					System.out.print("Downloaded new list \n");
 					return true;
 				}
 				else
 				{
-					System.out.print("Failed to get list\n");
-					System.out.print("restoring old list\n");
+					System.out.print("Failed to get list \n");
+					System.out.print("restoring old list \n");
 					oldList.renameTo(new File(FileManager.updaterDir+"/ModList.list"));
-					modList = oldList;
-					
 				}
 			}
 		} catch (IOException e) {
@@ -141,11 +138,10 @@ public static boolean updateList()
 	else
 	{
 		System.out.print("No Mod List");
-		File NmodList = Download.downloadFromUrl(updateURl, FileManager.updaterDir, "ModList.list");
-		if(NmodList != null)
+		File NmodList = Download.downloadFromUrl(updateURl, FileManager.updaterDir, "/ModList.list");
+		if(NmodList != null && NmodList.exists())
 		{
-			modList = NmodList;
-			System.out.print("Downloaded new list \n");
+			System.out.print("Downloaded Mod list \n");
 			return true;
 		}
 	}
@@ -273,8 +269,8 @@ public static List<File> getFileList(String loc,String fileEnd)
 public static String getDir()
 {
 	final File loader = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-	System.out.print("Working directory "+loader.getPath() +"\n");
-	return loader.getPath();
+	System.out.print("Working directory "+loader.getParent() +"\n");
+	return loader.getParent();
 }
 /**
  * Creates folders nothing more nothing less
