@@ -33,7 +33,9 @@ public static boolean rootFileCheck()
 	if(!folderCreator(dir, "mods")){errors.add("Missing mods folder");return false;}
 	else
 	{
+		
 		installedMods = getFileList(modsDir,".zip") != null ? getFileList(modsDir,".zip") : new ArrayList<File>();
+		errors.add(installedMods.size()+ " Installed mods");
 	}
 	if(!folderCreator(dir, "Updater")){errors.add("Missing Update folder");return false;}
 	else
@@ -42,13 +44,15 @@ public static boolean rootFileCheck()
 		if(!folderCreator(dir+"/Updater/", "mods")){errors.add("Missing update/mods folder");}
 		else
 		{
+			
 			modsStored = getFileList(modTemp,".zip") != null ? getFileList(modTemp,".zip") : new ArrayList<File>();
+			errors.add(modsStored.size()+" Mods Stored for use");
 		}
 		//checks for updates/jar folder which stores minecraft.jar backup
 		if(!folderCreator(updaterDir, "jars")){errors.add("Missing Update/jars folder");}
 		else
 		{
-			File file = new File(updaterDir+"jars/minecraft.jar");
+			File file = new File(updaterDir+"/jars/minecraft.jar");
 			if(!file.exists())
 			{
 				errors.add("Missing minecraft.jar");
@@ -65,6 +69,7 @@ public static boolean rootFileCheck()
 		else
 		{
 			jarMods = getFileList(updaterDir+"jarMods",".zip");
+			errors.add(jarMods.size()+" jarMods Stored for use");
 		}
 	}
 	if(!folderCreator(dir, "bin")){errors.add("Missing bin folder");return false;}
@@ -73,6 +78,7 @@ public static boolean rootFileCheck()
 		File minecraft = new File(dir+"/bin/minecraft.jar");
 		if(!minecraft.exists())
 		{
+			errors.add("Can't update without minecraft.jar");
 			JOptionPane.showMessageDialog(null, "Missing minecraft.jar.\n Run minecraft once");
 		}
 		else
@@ -83,13 +89,15 @@ public static boolean rootFileCheck()
 			{
 				try {
 					copyFile(minecraft, new File(updaterDir+"/jars"));
+					errors.add(" Backing up minecraft.jar");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
 	}
-	return false;	
+	errors.add("Reached end of File Check");
+	return true;	
 }
 public static boolean updateList()
 {

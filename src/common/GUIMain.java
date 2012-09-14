@@ -126,7 +126,7 @@ public class GUIMain extends JFrame implements ActionListener {
 					
 					if(FileManager.errors.size() > 0)
 					{
-						addToConsole("Main file check clear with errors:");
+						addToConsole("Main file check cleared with errors:");
 						for(int i = 0; i < FileManager.errors.size(); i++)
 						{
 							addToConsole("   "+FileManager.errors.get(i));
