@@ -1,4 +1,4 @@
-package src;
+package common.FileManager;
 
 public class IntallFiles {
 

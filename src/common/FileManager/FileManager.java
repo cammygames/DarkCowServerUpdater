@@ -1,37 +1,39 @@
-package src;
+package common.FileManager;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
-public class FileManager {
-static String dir = getDir();
-static String modsDir = dir+"/mods";
-static String updaterDir = dir + "/Updater";
-static String modTemp = updaterDir+"/mods";
-static String updateURl = "https://dl.dropbox.com/u/70622753/updater/ModList.list.txt";
+import common.Download;
+import common.Main;
 
-static List<File> modsStored = new ArrayList<File>();
-static List<File> jarMods = new ArrayList<File>();
-static List<File> installedMods = new ArrayList<File>();
-static File mc = null;
-static File currentMc = null;
-static List<String> errors = new ArrayList<String>();
+
+public class FileManager {
+public static String dir = getDir();
+public static String modsDir = dir+"/mods";
+public static String updaterDir = dir + "/Updater";
+public static String modTemp = updaterDir+"/mods";
+public static String updateURl = "https://dl.dropbox.com/u/70622753/updater/ModList.list.txt";
+
+public static List<File> modsStored = new ArrayList<File>();
+public static List<File> jarMods = new ArrayList<File>();
+public static List<File> installedMods = new ArrayList<File>();
+public static File mc = null;
+public static File currentMc = null;
+public static List<String> errors = new ArrayList<String>();
 public static boolean rootFileCheck()
 {
 	
 	if(!folderCreator(dir, "mods")){errors.add("Missing mods folder");return false;}
 	else
 	{
-		installedMods = getFileList(modsDir,".zip");
+		installedMods = getFileList(modsDir,".zip") != null ? getFileList(modsDir,".zip") : new ArrayList<File>();
 	}
 	if(!folderCreator(dir, "Updater")){errors.add("Missing Update folder");return false;}
 	else
@@ -40,13 +42,13 @@ public static boolean rootFileCheck()
 		if(!folderCreator(dir+"/Updater/", "mods")){errors.add("Missing update/mods folder");}
 		else
 		{
-			modsStored = getFileList(modTemp,".zip");
+			modsStored = getFileList(modTemp,".zip") != null ? getFileList(modTemp,".zip") : new ArrayList<File>();
 		}
 		//checks for updates/jar folder which stores minecraft.jar backup
 		if(!folderCreator(updaterDir, "jars")){errors.add("Missing Update/jars folder");}
 		else
 		{
-			File file = new File(updaterDir+"/jars/minecraft.jar");
+			File file = new File(updaterDir+"jars/minecraft.jar");
 			if(!file.exists())
 			{
 				errors.add("Missing minecraft.jar");
@@ -62,7 +64,7 @@ public static boolean rootFileCheck()
 		if(!folderCreator(dir+"/Updater/", "jarMods")){errors.add("Missing Update/jarMods folder");}
 		else
 		{
-			jarMods = getFileList(updaterDir+"/jarMods",".zip");
+			jarMods = getFileList(updaterDir+"jarMods",".zip");
 		}
 	}
 	if(!folderCreator(dir, "bin")){errors.add("Missing bin folder");return false;}
@@ -231,38 +233,28 @@ public static List<File> getFileList(String loc,String fileEnd)
 	  File folder = new File(loc);
 	  File[] listOfFiles = folder.listFiles(); 
 	  List<File> files = new ArrayList<File>();
-	  for (int i = 0; i < listOfFiles.length; i++) 
+	  if(listOfFiles != null)
 	  {
-	 
-		   if (listOfFiles[i].isFile()) 
-		   {
-		   file = listOfFiles[i].getName();
-		       if (file.endsWith(fileEnd)|| fileEnd == "")
-		       {
-		          files.add(listOfFiles[i]);
-		       }
-		   }
+		  for (int i = 0; i < listOfFiles.length; i++) 
+		  {
+		 
+			   if (listOfFiles[i].isFile()) 
+			   {
+			   file = listOfFiles[i].getName();
+			       if (file.endsWith(fileEnd)|| fileEnd == "")
+			       {
+			          files.add(listOfFiles[i]);
+			       }
+			   }
+		  }
 	  }
 	  return files;
 }
 
 public static String getDir()
 {
-	final URL location;
-	final String classLocation = Main.class.getName().replace('.', '/')+ ".class";
-	final ClassLoader loader = Main.class.getClassLoader();
-	if (loader == null) 
-	{
-	 System.out.println("Cannot find dir loc");
-	} 
-	else 
-	{
-	  location = loader.getResource(classLocation);
-	  return location.toString();
-	 }
-	 
-	return null;
-	
+	final File loader = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+	return loader.getPath();
 }
 /**
  * Creates folders nothing more nothing less
@@ -272,7 +264,7 @@ public static String getDir()
  */
 public static boolean folderCreator(String dest, String name)
 {
-	 File fileMain = new File(dest + name);
+	 File fileMain = new File(dest +"/"+ name);
 	 if(!fileMain.exists())
 	 {
 		 try

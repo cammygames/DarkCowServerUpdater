@@ -1,9 +1,11 @@
-package src;
+package common;
+
 
 import java.io.File;
 import java.io.IOException;
 
-class Main {
+
+public class Main {
 	public final static String MasterUser = ""; //too prevent people from stealing only added on compile
 	public final static String MasterPass = "";
 	public static File modList = null;

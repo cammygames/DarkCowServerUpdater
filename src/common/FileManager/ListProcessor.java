@@ -1,9 +1,12 @@
-package src;
+package common.FileManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import common.Download;
+
 
 public class ListProcessor {
 public static String[][] ModList = new String[50][4];
@@ -60,7 +63,7 @@ public static List<String> debug =  new ArrayList<String>();
 							{
 								type = "jars";
 							}
-							File downloaded = Download.downloadFile(ModList[f][3], FileManager.updaterDir+"/"+type, ModList[f][0], ModList[f][2]);
+							File downloaded = Download.downloadFile(ModList[f][3], FileManager.updaterDir+type, ModList[f][0], ModList[f][2]);
 							if(downloaded.exists())
 							{
 								debug.add("Downloaded " + ModList[f][0]+" to updater/mods");

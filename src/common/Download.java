@@ -1,4 +1,4 @@
-package src;
+package common;
 
 
 import java.io.BufferedInputStream;
@@ -9,13 +9,6 @@ import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Calendar;
-
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
 
 public class Download {
 	
@@ -94,6 +87,7 @@ public class Download {
 	    	return dFile.exists() ? dFile : null ;
 	 
 	    }
+	    /**
 	    public static void SFTPDownload(String user,String pass,String host, String src,String des,String fileName) {
 	    	 JSch jsch = new JSch();
 	         Session session = null;
@@ -119,4 +113,5 @@ public class Download {
 	             e.printStackTrace();
 	         }
 	    }
+	    **/
 }
