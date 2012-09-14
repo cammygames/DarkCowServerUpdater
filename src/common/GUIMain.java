@@ -1,103 +1,48 @@
 package common;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
-import common.FileManager.FileManager;
-import common.FileManager.ListProcessor;
-
+@SuppressWarnings("all")
 public class GUIMain extends JFrame implements ActionListener {
 	
-	public String[] display = new String[]{"1","2","3","4","5","6"};
+    private ScrollPane consoleOut;
+    private JPanel infoPanel;
+    private JMenuBar menuBar;
+    private JMenu menuButton1;
+    private JMenu menuButton2;
+    private JMenu menuButton3;
+    private JButton update;
+    private JPanel webPanel;
+    private JTextArea consoleOut1;
+    
+    public String[] display = new String[]{"1","2","3","4","5","6"};
+    
 	public String[] disList = new String[300];	
 	
 	public int disCount = 0;
 	
-	public boolean firstUpdate = true;
-	
-	Icon updateB = new ImageIcon(getClass().getResource("update.png"));
-	Icon hovUpdateB = new ImageIcon(getClass().getResource("hovupdate.png"));
-	Image background = new ImageIcon(getClass().getResource("hovupdate.png")).getImage();
-	
 	private static final long serialVersionUID = 2696364157973172973L;
 	
-	private JPanel pnl = new JPanel();
-	private JButton updateButton = new JButton("",updateB);;
-	private JButton Up = new JButton("U",updateB);;
-	private JButton Down = new JButton("D",updateB);;
-	private JTextArea consoleOut = new JTextArea(30,100);
-	private JScrollPane area;
-	public GUIMain()
+    public GUIMain() {
+    	
+        initComponents();
+        this.setResizable(false);
+    }
+    @Override
+	public void actionPerformed(ActionEvent event) 
 	{
-		super("UE Mod Downloader");
-		if(firstUpdate)
+		if(event.getSource() == update)
 		{
-			disList[0] = "Starting up...";
-			firstUpdate = false;
+			addToConsole("Checking for Updates");
 		}
-		setSize(800,600);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//this.setResizable(false);
-		this.setLayout(null);
-		addTextBox(consoleOut,pnl,10, 470, 650, 100);
-		addButton(updateButton,pnl,690, 470, 100, 100);
-		addButton(Up,pnl,660, 470, 20, 40);
-		addButton(Down,pnl,660, 530, 20, 40);
-		//console box
-		consoleOut.setEditable(false);
-		consoleOut.setWrapStyleWord(true);
-		consoleOut.setText("Debug Console");
-	     //update button		
-		updateButton.setRolloverIcon(hovUpdateB);
-		updateButton.setBorderPainted(false);
-				
-		
-		this.setBackground(Color.red);
-		
-		setVisible(true);
-
 	}
-	private void adjDisplay()
-	{
-		for(int i = 0; i<6;i++)
-		{
-			if(disList[i+disCount] != null)
-			{
-				display[i] = disList[i+disCount];
-			}
-			else
-			{
-				display[i] = "";
-			}
-		}
-		consoleOut.setText( display[0] + "\n" + display[1] + "\n" + display[2] + "\n" + display[3] + "\n" + display[4] + "\n" + display[5]) ;
-		consoleOut.repaint();
-	}
-	private void addButton(JButton button,JPanel pn, int x, int y, int h,int w)
-	{
-		add(button);
-		button.setBounds(x,y,h,w);
-		button.addActionListener(this);
-	}
-	private void addTextBox(Component box,JPanel pn,int x, int y, int h,int w)
-	{		
-		add(box);
-		box.setBounds(x,y,h,w);
-	}
-	public void addToConsole(String msg)
+    public void addToConsole(String msg)
 	{
 		for(int i = 0; i < disList.length; i++)
 		{
@@ -113,84 +58,114 @@ public class GUIMain extends JFrame implements ActionListener {
 		}
 		adjDisplay();
 	}
-		@Override
-		public void actionPerformed(ActionEvent event) 
+    private void adjDisplay()
+	{
+		for(int i = 0; i<6;i++)
 		{
-			if(event.getSource() == updateButton)
+			if(disList[i+disCount] != null)
 			{
-				updateButton.setEnabled(false);
-				addToConsole("Checking root files");
-				Boolean fileExist = FileManager.rootFileCheck();
-				if(fileExist)
-				{
-					
-					if(FileManager.errors.size() > 0)
-					{
-						addToConsole("Main file check Debug:");
-						for(int i = 0; i < FileManager.errors.size(); i++)
-						{
-							addToConsole("   "+FileManager.errors.get(i));
-						}
-					}
-					else
-					{
-						addToConsole("root file check cleared");
-					}
-					Boolean uc = FileManager.updateList();
-					if(!uc)
-					{
-						addToConsole("Critical:Can't update list.");
-						if(new File(FileManager.updaterDir+"/ModList.list").exists())
-						{
-							addToConsole("Defaulting to old list");
-						}
-						else
-						{
-							addToConsole("Critical:Can't find any mod lists.");
-						}
-					}
-					boolean listRan = ListProcessor.ProcessorUpdateList();
-					List debug = ListProcessor.debug;
-					if(ListProcessor.debug.size() > 0)
-					{
-						addToConsole("Starting Update Processor");
-						for(int i = 0; i < ListProcessor.debug.size(); i++)
-						{
-							addToConsole(ListProcessor.debug.get(i));
-						}
-					}
-				}
-				else
-				{
-					addToConsole("Critical:Main file check failed");
-					if(FileManager.errors.size() > 0)
-					{
-						addToConsole("Main File Check Debug:");
-						for(int i = 0; i < FileManager.errors.size(); i++)
-						{
-							addToConsole("   "+FileManager.errors.get(i));
-						}
-					}
-				}
-				updateButton.setEnabled(true);
+				display[i] = disList[i+disCount];
 			}
-			if(event.getSource() == Up)
+			else
 			{
-				if( disCount-1 > 1 &&disList[disCount] !=null)
-				{
-					disCount--;
-					adjDisplay();
-				}
-			}
-			if(event.getSource() == Down)
-			{
-				if(disList[disCount+2] !=null)
-				{
-					disCount++;
-					adjDisplay();
-				}
+				display[i] = "";
 			}
 		}
-		
-	
+		consoleOut1.setText( "\n" + display[0] + "\n" + display[1] + "\n" + display[2] + "\n" + display[3] + "\n" + display[4] + "\n" + display[5]) ;
+		consoleOut1.repaint();
+	}
+    private void initComponents() {
+
+        consoleOut = new ScrollPane();
+        update = new JButton();
+        webPanel = new JPanel();
+        infoPanel = new JPanel();
+        menuBar = new JMenuBar();
+        menuButton1 = new JMenu();
+        menuButton2 = new JMenu();
+        menuButton3 = new JMenu();
+        consoleOut1 = new JTextArea(30,100);
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Ue Mod Downloader");
+        setBackground(new java.awt.Color(0, 75, 223));
+        setBounds(new java.awt.Rectangle(0, 0, 200, 520));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        
+        update.addActionListener(this);
+        update.setText("Update");
+        
+        consoleOut1.setEditable(false);
+        consoleOut1.setText("Debug Console");
+        
+        consoleOut.add(consoleOut1);
+        
+        webPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        javax.swing.GroupLayout webPanelLayout = new javax.swing.GroupLayout(webPanel);
+        webPanel.setLayout(webPanelLayout);
+        webPanelLayout.setHorizontalGroup(
+            webPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        webPanelLayout.setVerticalGroup(
+            webPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 345, Short.MAX_VALUE)
+        );
+
+        infoPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
+        infoPanel.setLayout(infoPanelLayout);
+        infoPanelLayout.setHorizontalGroup(
+            infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        infoPanelLayout.setVerticalGroup(
+            infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        menuButton1.setText("Download Mods");
+        menuBar.add(menuButton1);
+
+        menuButton2.setText("Download Minecraft");
+        menuBar.add(menuButton2);
+
+        menuButton3.setText("Credits");
+        menuBar.add(menuButton3);
+
+        setJMenuBar(menuBar);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(webPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(consoleOut, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(webPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(consoleOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(28, 28, 28))
+        );
+
+        pack();
+    }
 }
