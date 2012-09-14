@@ -18,6 +18,18 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
 public class Download {
+	
+	public static File downloadFile(String url,String loc,String file,String access)
+	{try {
+		if(access == "ftp")	{return  DownloadFromFtp("","","", url,loc,file);}//TODO fix
+		if(access == "url"){ return downloadFromUrl(url, loc, file);}
+		//TODO add SFTP
+		} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return null;		
+	}
 	/**
 	 * 
 	 * @param url - url to use for downloading
@@ -39,7 +51,7 @@ public class Download {
 		    double timeT = timeF - timeI;
 		    System.out.print(file+" Downloaded in "+ timeT+"mills");
 		    File dFile = new File(loc+"/"+file);
-		    return dFile ;
+		    return dFile.exists() ? dFile : null ;
 		}
 		catch(Exception e)
 		{
@@ -53,17 +65,13 @@ public class Download {
 	
 	 
 	 	
-	    public static void DownloadFromFtp(String user,String pass,String host, String src,String des) throws Exception 
-	    {
-	    	String  server = "frs.sourceforge.net";
-	    	String  userName = "user";
-	    	String  password = "pass";
-	    	String  fileName = "/home/frs/project/uemodpack/files/MC.exe";
+	    public static File DownloadFromFtp(String user,String pass,String host, String src,String des,String fileName) throws Exception 
+	    {	    	
 	    	System .out.println("Connecting to FTP server...");    
 	 
 	    	//Connection String
 	    	//URL  url = new URL ("ftp://"+userName+":"+password+"@"+server+"/public_html/"+fileName+";type=i");
-	    	URL url = new URL("ftp://"+userName+":"+password+"@"+server+"/"+fileName+";type=i");
+	    	URL url = new URL("ftp://"+user+":"+pass+"@"+host+"/"+fileName+";type=i");
 	    	URLConnection  con = url.openConnection();
 	 
 	    	BufferedInputStream  in = new BufferedInputStream (con.getInputStream());
@@ -71,7 +79,7 @@ public class Download {
 	    	System .out.println("Downloading file.");
 	 
 	    	//Downloads the selected file to the C drive
-	    	FileOutputStream  out = new FileOutputStream ("C:\\" + fileName);
+	    	FileOutputStream  out = new FileOutputStream (des + fileName);
 	 
 	    	int i = 0;
 	    	byte[] bytesIn = new byte[1024];
@@ -82,6 +90,8 @@ public class Download {
 	    	out.close();
 	    	in.close();
 	    	System .out.println("File downloaded.");
+	    	File dFile = new File(des + fileName);
+	    	return dFile.exists() ? dFile : null ;
 	 
 	    }
 	    public static void SFTPDownload(String user,String pass,String host, String src,String des,String fileName) {

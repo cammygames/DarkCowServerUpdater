@@ -24,7 +24,7 @@ public class FileWriter {
 	  
 	  //For smaller files
 	  
-	  List<String> readSmallTextFile(String aFileName) throws IOException {
+	 public static List<String> readSmallTextFile(String aFileName) throws IOException {
 	    Path path = Paths.get(aFileName);
 	    return Files.readAllLines(path, ENCODING);
 	  }

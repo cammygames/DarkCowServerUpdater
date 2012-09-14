@@ -153,6 +153,16 @@ public class GUIMain extends JFrame implements ActionListener {
 							addToConsole("Critical:Can't find any mod lists.");
 						}
 					}
+					boolean listRan = ListProcessor.ProcessorUpdateList();
+					List debug = ListProcessor.debug;
+					if(ListProcessor.debug.size() > 0)
+					{
+						addToConsole("Starting Update Processor");
+						for(int i = 0; i < ListProcessor.debug.size(); i++)
+						{
+							addToConsole(ListProcessor.debug.get(i));
+						}
+					}
 				}
 				else
 				{
