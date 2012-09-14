@@ -2,6 +2,7 @@ package src;
 
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -24,7 +25,7 @@ public class Download {
 	 * @param file - file name
 	 * @return
 	 */
-	public static String downloadFromUrl(String url,String loc, String file)
+	public static File downloadFromUrl(String url,String loc, String file)
 	{
 		try{
 			Calendar cal = Calendar.getInstance();
@@ -32,17 +33,19 @@ public class Download {
 			System.out.print("Downloading "+file);
 			URL website = new URL(url);
 		    ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-		    FileOutputStream fos = new FileOutputStream(file);
+		    FileOutputStream fos = new FileOutputStream(loc+"/"+file);
 		    fos.getChannel().transferFrom(rbc, 0, 1 << 24);
 		    double timeF = cal.getTimeInMillis();
 		    double timeT = timeF - timeI;
 		    System.out.print(file+" Downloaded in "+ timeT+"mills");
+		    File dFile = new File(loc+"/"+file);
+		    return dFile ;
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
-		return "";
+		return null;
 		
 	}
 	
