@@ -33,44 +33,45 @@ public static List<String> debug =  new ArrayList<String>();
 				List<File> installedMods = FileManager.installedMods;
 				for(int f = 0; f<mods.size();f++)
 				{
-					File cMod = new File(FileManager.modsDir+"/"+ModList[f][0]);
-					File uMod = new File(FileManager.modTemp+"/"+ModList[f][0]);
+					File modFolder = new File(FileManager.modsDir+"/"+ModList[f][0]);
+					File tempFolder = new File(FileManager.modTemp+"/"+ModList[f][0]);
 					
 					//check to see if the mod is already installed in the mods folder
-					if(!cMod.exists() || !installedMods.contains(cMod))
+					if(!modFolder.exists() || !installedMods.contains(modFolder))
 					{
 						String modStr = ModList[f][0]+";"+ModList[f][1]+";"+ModList[f][2]+";"+ModList[f][3];
 						//missingMods.add(modStr);
 						debug.add("File " + ModList[f][0]+" not Found in mods folder");
 						//looks for the mod in the mod storage file
-						if(uMod.exists() && FileManager.modsStored.contains(uMod))
+						if(tempFolder.exists() && FileManager.modsStored.contains(tempFolder))
 						{
-							boolean ccMod = FileManager.copyFile(uMod, cMod);
+							boolean ccMod = FileManager.copyFile(tempFolder, modFolder);
 							if(ccMod)
 							{
 								debug.add("File " + ModList[f][0]+" copied to mods folder");
-								if(installedMods.contains(cMod))
+								if(installedMods.contains(modFolder))
 								{
-									installedMods.remove(cMod);
+									installedMods.remove(modFolder);
 								}
 							}
 						}
 						else
 						{
 							//if it can't find it in storage file it will try to download file
-							String type = "mods";
+							String type = "mods/";
 							if(ModList[f][1] == "1")
 							{
-								type = "jars";
+								type = "jars/";
 							}
-							File downloaded = Download.downloadFile(ModList[f][3], FileManager.updaterDir+type, ModList[f][0], ModList[f][2]);
-							if(downloaded.exists())
+							//TODO research this more for some reason its downloading strait to .minecraft/mods
+							File downloaded = Download.downloadFile(ModList[f][3], FileManager.updaterDir+"/"+type, ModList[f][0], "url");
+							if(downloaded != null && downloaded.exists())
 							{
 								debug.add("Downloaded " + ModList[f][0]+" to updater/mods");
-								boolean ctc = FileManager.copyFile(downloaded, cMod);
-								if(installedMods.contains(cMod) && ctc)
+								boolean ctc = FileManager.copyFile(tempFolder, modFolder);
+								if(installedMods.contains(modFolder) && ctc)
 								{
-									installedMods.remove(cMod);
+									installedMods.remove(modFolder);
 								}
 							}
 							else
@@ -83,9 +84,9 @@ public static List<String> debug =  new ArrayList<String>();
 					else
 					{
 						
-						if(installedMods.contains(cMod))
+						if(installedMods.contains(modFolder))
 						{
-							installedMods.remove(cMod);
+							installedMods.remove(modFolder);
 						}
 					}
 				}

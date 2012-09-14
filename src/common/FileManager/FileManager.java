@@ -135,7 +135,6 @@ public static boolean updateList()
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -201,7 +200,7 @@ public static boolean deleteFile(String loc,String file,boolean backup)
 						return del.delete();	
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 			}
@@ -274,6 +273,7 @@ public static List<File> getFileList(String loc,String fileEnd)
 public static String getDir()
 {
 	final File loader = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+	System.out.print("Working directory "+loader.getPath() +"\n");
 	return loader.getPath();
 }
 /**
@@ -291,7 +291,7 @@ public static boolean folderCreator(String dest, String name)
 		 {
 			 if(fileMain.mkdir())
 			 {
-				 System.out.println("Folder "+name+" Created");
+				 System.out.println("Folder "+name+" Created \n");
 				 return true;
 			 }
 		 }

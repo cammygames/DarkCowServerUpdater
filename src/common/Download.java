@@ -16,6 +16,7 @@ public class Download {
 	{try {
 		if(access == "ftp")	{return  DownloadFromFtp("","","", url,loc,file);}//TODO fix
 		if(access == "url"){ return downloadFromUrl(url, loc, file);}
+		return downloadFromUrl(url, loc, file);
 		//TODO add SFTP
 		} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -33,18 +34,29 @@ public class Download {
 	public static File downloadFromUrl(String url,String loc, String file)
 	{
 		try{
-			Calendar cal = Calendar.getInstance();
+			Calendar cal = Calendar.getInstance();//get the current time
 			double timeI = cal.getTimeInMillis();
-			System.out.print("Downloading "+file);
-			URL website = new URL(url);
-		    ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-		    FileOutputStream fos = new FileOutputStream(loc+"/"+file);
-		    fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+			System.out.print("\n Downloading "+file);
+			
+			URL website = new URL(url);//turn the url string into a url
+		    ReadableByteChannel rbc = Channels.newChannel(website.openStream());//open a channel to start streaming data
+		    FileOutputStream fos = new FileOutputStream(loc+file);//starts streaming data
+		    fos.getChannel().transferFrom(rbc, 0, 1 << 24);//streams the data
+		    
+		    //calcs the time it took to download which for some reason allway seens to be 0.0mills
 		    double timeF = cal.getTimeInMillis();
-		    double timeT = timeF - timeI;
-		    System.out.print(file+" Downloaded in "+ timeT+"mills");
-		    File dFile = new File(loc+"/"+file);
-		    return dFile.exists() ? dFile : null ;
+		    double timeT = timeF - timeI;		    
+		    File dFile = new File(loc+file);
+		    if(dFile.exists())
+		    {
+		    System.out.print("\n"+file+" Downloaded in "+ timeT+"mills");
+		    return dFile;
+		    }
+		    else
+		    {
+		    	System.out.print("\n"+file+" failed to download");
+		    }
+		    
 		}
 		catch(Exception e)
 		{
