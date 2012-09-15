@@ -47,6 +47,7 @@ public class Download {
 		    double timeF = cal.getTimeInMillis();
 		    double timeT = timeF - timeI;		    
 		    File dFile = new File(loc+file);
+		    fos.close();
 		    if(dFile.exists())
 		    {
 		    System.out.print("\n"+file+" Downloaded in "+ timeT+"mills");

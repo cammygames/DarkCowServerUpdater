@@ -42,7 +42,15 @@ public class GUIMain extends JFrame implements ActionListener {
 				updateCheck();
 				update.setEnabled(true);
 				update.setText("Update Now");
-				canUpdate = true;
+				if(FileManager.dir.endsWith(".minecraft"))
+				{
+					canUpdate = true;
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Updater need to be in .minecraft directory to function");
+					update.setEnabled(false);
+				}
 			}
 			else
 			{	

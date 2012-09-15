@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import common.Download;
+import common.NetWork;
 
 
 public class FileManager {
@@ -29,6 +30,9 @@ public static File mc = null;
 public static File currentMc = null;
 public static File modList = new File(updaterDir+"/ModList.list");
 public static File oldList = new File(updaterDir+"/ModList.list.backup");
+
+public static boolean inMC = false;
+
 public static boolean rootFileCheck()
 {
 	
@@ -110,7 +114,7 @@ public static boolean updateList()
 		try {
 			if(oldList.exists())
 			{
-				Boolean delc = FileManager.deleteFile(FileManager.updaterDir, "/ModList.list.backup", false);
+				FileManager.deleteFile(FileManager.updaterDir, "/ModList.list.backup", false);
 			}
 				Boolean cc = FileManager.copyFile(modList,new File(modList+".backup"));
 			if(cc)
@@ -209,6 +213,7 @@ public static boolean deleteFile(String loc,String file,boolean backup)
  * @param destFile
  * @throws IOException
  */
+@SuppressWarnings("resource")
 public static boolean copyFile(File sourceFile, File destFile) throws IOException 
 {
 	if (!sourceFile.exists()) {
@@ -228,6 +233,8 @@ public static boolean copyFile(File sourceFile, File destFile) throws IOExceptio
 	        destination.close();
 	        return true;
 	}
+	source.close();
+    destination.close();
 	return false;
 
 
@@ -267,8 +274,18 @@ public static List<File> getFileList(String loc,String fileEnd)
 
 public static String getDir()
 {
-	final File loader = new File(Download.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+	final File loader = new File(NetWork.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 	System.out.print("Working directory "+loader.getParent() +"\n");
+	if(loader.getParent().endsWith(".minecraft"))
+	{
+		inMC  = true;
+		System.out.print("Directory is in the minecraft folder \n");
+	}
+	else
+	{
+		inMC = false;
+		System.out.print("Directory is not in the minecraft folder \n");
+	}
 	return loader.getParent();
 }
 /**

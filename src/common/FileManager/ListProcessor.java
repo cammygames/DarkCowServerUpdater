@@ -39,8 +39,6 @@ public static List<String> debug =  new ArrayList<String>();
 					//check to see if the mod is already installed in the mods folder
 					if(!modFolder.exists() || !installedMods.contains(modFolder))
 					{
-						String modStr = ModList[f][0]+";"+ModList[f][1]+";"+ModList[f][2]+";"+ModList[f][3];
-						//missingMods.add(modStr);
 						debug.add("File " + ModList[f][0]+" not Found in mods folder");
 						//looks for the mod in the mod storage file
 						if(tempFolder.exists() && FileManager.modsStored.contains(tempFolder))
@@ -104,8 +102,7 @@ public static List<String> debug =  new ArrayList<String>();
 				}
 				//now time to remove extra mods from mods folder, these are most likely old mod versions
 				
-				for(@SuppressWarnings("unused")
-				int o = 0; 0 < extraMods.size(); o++)
+				while( extraMods.size() > 0)
 				{
 					//same process as installing mod but it will delete the mod when its done
 					for(int i = 0; i<extraMods.size();i++)

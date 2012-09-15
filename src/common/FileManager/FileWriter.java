@@ -29,7 +29,8 @@ public class FileWriter {
 	    Path path = Paths.get(aFileName);
 	    Files.write(path, aLines, ENCODING);
 	  }
-	  private static void log(Object aMsg){
+	  @SuppressWarnings("unused")
+	private static void log(Object aMsg){
 	    System.out.println(String.valueOf(aMsg));
 	  }
 }
