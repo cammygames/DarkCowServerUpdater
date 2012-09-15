@@ -11,7 +11,6 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import common.Download;
-import common.Main;
 
 
 public class FileManager {
@@ -268,7 +267,7 @@ public static List<File> getFileList(String loc,String fileEnd)
 
 public static String getDir()
 {
-	final File loader = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+	final File loader = new File(Download.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 	System.out.print("Working directory "+loader.getParent() +"\n");
 	return loader.getParent();
 }

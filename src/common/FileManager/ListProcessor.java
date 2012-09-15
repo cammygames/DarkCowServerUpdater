@@ -104,7 +104,8 @@ public static List<String> debug =  new ArrayList<String>();
 				}
 				//now time to remove extra mods from mods folder, these are most likely old mod versions
 				
-				for(int o = 0; 0 < extraMods.size(); o++)
+				for(@SuppressWarnings("unused")
+				int o = 0; 0 < extraMods.size(); o++)
 				{
 					//same process as installing mod but it will delete the mod when its done
 					for(int i = 0; i<extraMods.size();i++)

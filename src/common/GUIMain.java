@@ -3,15 +3,16 @@ package common;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 
 import javax.swing.*;
 
-@SuppressWarnings("all")
+import common.FileManager.FileManager;
+import common.FileManager.ListProcessor;
+
 public class GUIMain extends JFrame implements ActionListener {
 	
-    private ScrollPane consoleOut;
+    private ScrollPane consoleOut = new ScrollPane();
     private JPanel infoPanel;
     private JMenuBar menuBar;
     private JMenu menuButton1;
@@ -19,14 +20,10 @@ public class GUIMain extends JFrame implements ActionListener {
     private JMenu menuButton3;
     private JButton update;
     private JPanel webPanel;
-    private JTextArea consoleOut1;
+    private JTextArea consoleOut1 = new JTextArea(30,100);
     
-    public String[] display = new String[]{"1","2","3","4","5","6"};
-    
-	public String[] disList = new String[300];	
-	
-	public int disCount = 0;
-	
+    private boolean canUpdate = false;
+    private boolean modsUpdate = false;
 	private static final long serialVersionUID = 2696364157973172973L;
 	
     public GUIMain() {
@@ -39,44 +36,112 @@ public class GUIMain extends JFrame implements ActionListener {
 	{
 		if(event.getSource() == update)
 		{
-			addToConsole("Checking for Updates");
-		}
-	}
-    public void addToConsole(String msg)
-	{
-		for(int i = 0; i < disList.length; i++)
-		{
-			if(disList[i] == null && disList[i+1] == null)
+			if(!canUpdate)
 			{
-				disList[i] = msg;
-				break;
-			}
-		}
-		if(disList[7] != null)
-		{
-			disCount++;
-		}
-		adjDisplay();
-	}
-    private void adjDisplay()
-	{
-		for(int i = 0; i<6;i++)
-		{
-			if(disList[i+disCount] != null)
-			{
-				display[i] = disList[i+disCount];
+				update.setEnabled(false);
+				updateCheck();
+				update.setEnabled(true);
+				update.setText("Update Now");
+				canUpdate = true;
 			}
 			else
-			{
-				display[i] = "";
+			{	
+				if(!modsUpdate)
+				{
+					update.setEnabled(false);
+					boolean pp = triggerUpdate();
+					update.setEnabled(true);
+					if(pp)
+					{
+						update.setText("Start");
+						modsUpdate = true;
+						addToConsole("Sorry minecraft can't be started from updater yet");
+						update.setEnabled(false);
+					}
+					else
+					{
+						update.setText("retry");
+						modsUpdate = false;
+						canUpdate = false;
+						
+					}
+					
+					
+				}
+				else
+				{
+					//TODO add logic to start minecraftLauncher.jar
+				}
 			}
 		}
-		consoleOut1.setText( "\n" + display[0] + "\n" + display[1] + "\n" + display[2] + "\n" + display[3] + "\n" + display[4] + "\n" + display[5]) ;
-		consoleOut1.repaint();
+	}
+    public void updateCheck()
+    {
+    	//check to make sure we have a base folder system to work out of
+    	//Normally will generate files it need if not something is wrong
+    	addToConsole("Checking File System");
+		Boolean fileExist = FileManager.rootFileCheck();
+    	if(fileExist)
+		{
+			
+			if(FileManager.errors.size() > 0)
+			{
+				addToConsole("Main file check Debug:");
+				for(int i = 0; i < FileManager.errors.size(); i++)
+				{
+					addToConsole("   "+FileManager.errors.get(i));
+				}
+			}
+			//Check for the update list that is used to manage mods
+			Boolean uc = FileManager.updateList();
+			if(!uc)
+			{
+				addToConsole("Critical: Failed To Get List");
+				if(new File(FileManager.updaterDir+"/ModList.list").exists())
+				{
+					addToConsole("Defaulting to old list");
+				}
+				else
+				{
+					addToConsole("Critical: No Update List Found.");
+				}
+			}
+		}
+		else
+		{
+			addToConsole("Critical: Main file check failed");
+			if(FileManager.errors.size() > 0)
+			{
+				addToConsole("Main File Check Debug:");
+				for(int i = 0; i < FileManager.errors.size(); i++)
+				{
+					addToConsole("   "+FileManager.errors.get(i));
+				}
+			}
+		}	
+    }
+    public boolean triggerUpdate()
+    {
+    	
+			addToConsole("Starting Updater");
+			boolean updatedAll = ListProcessor.ProcessorUpdateList(); //processes the update list and downloads missing mods
+			if(ListProcessor.debug.size() > 0)
+			{
+				addToConsole("Starting Update Processor");
+				for(int i = 0; i < ListProcessor.debug.size(); i++)
+				{
+					addToConsole(ListProcessor.debug.get(i));
+				}
+			}
+			return updatedAll;
+    }
+    public void addToConsole(String msg)
+	{
+    	String content = consoleOut1.getText();
+    	consoleOut1.setText(content + "\n"+ msg);
 	}
     private void initComponents() {
 
-        consoleOut = new ScrollPane();
         update = new JButton();
         webPanel = new JPanel();
         infoPanel = new JPanel();
@@ -84,8 +149,7 @@ public class GUIMain extends JFrame implements ActionListener {
         menuButton1 = new JMenu();
         menuButton2 = new JMenu();
         menuButton3 = new JMenu();
-        consoleOut1 = new JTextArea(30,100);
-
+        
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ue Mod Downloader");
         setBackground(new java.awt.Color(0, 75, 223));
@@ -93,11 +157,8 @@ public class GUIMain extends JFrame implements ActionListener {
         setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         
         update.addActionListener(this);
-        update.setText("Update");
-        
+        update.setText("UpdateCheck");
         consoleOut1.setEditable(false);
-        consoleOut1.setText("Debug Console");
-        
         consoleOut.add(consoleOut1);
         
         webPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
@@ -126,10 +187,10 @@ public class GUIMain extends JFrame implements ActionListener {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        menuButton1.setText("Download Mods");
+        menuButton1.setText("UpdateCheck");
         menuBar.add(menuButton1);
 
-        menuButton2.setText("Download Minecraft");
+        menuButton2.setText("WebSite");
         menuBar.add(menuButton2);
 
         menuButton3.setText("Credits");
