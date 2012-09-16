@@ -82,40 +82,33 @@ public class GUIMain extends JFrame implements ActionListener {
 
 		if(event.getSource() == launchMc)
 		{
-			try
-			{
-				this.addToConsole("Attempting to launch Minecraft");
 				openMC();
-			}catch(Exception e){
-
-				e.printStackTrace();
-				this.addToConsole("Failed to launch Minecraft");
-			}
 		}
 	}   
     public void openMC()
     {
-    	//"http://s3.amazonaws.com/MinecraftDownload/launcher/minecraft.jar"
-    	File file = new File(FileManager.updaterDir+"/Minecraft.jar");
+    	File file = new File(FileManager.updaterDir+"/Launcher.jar");
     	if(file.exists())
     	{
+    		this.addToConsole("Attempting to launch Minecraft");
     		try {
-    			ProcessBuilder pb = new ProcessBuilder("java","-Xmx1024M", "-Xms512M", "-cp", FileManager.updaterDir+"/Minecraft.jar", "net.minecraft.LauncherFrame");
+    			ProcessBuilder pb = new ProcessBuilder("java","-Xmx1024M", "-Xms512M", "-cp", FileManager.updaterDir+"/Launcher.jar", "net.minecraft.LauncherFrame");
     			Process process = pb.start();
-    		} catch (IOException e) {e.printStackTrace();}	
+    		} catch (IOException e) {
+    			this.addToConsole("Failed to launch Minecraft");
+    			e.printStackTrace();
+    			}	
     		
     	}
     	else
     	{
-    		Download.downloadFile("http://s3.amazonaws.com/MinecraftDownload/launcher/minecraft.jar", FileManager.updaterDir, "/Minecraft.jar", "url");
+    		Download.downloadFile("http://s3.amazonaws.com/MinecraftDownload/launcher/minecraft.jar", FileManager.updaterDir, "/Launcher.jar", "url");
     		if(file.exists())
         	{
     			openMC();
         	}
     		
     	}
-	    
-	    System.exit(0);
     }
     public void updateCheck()
     {
