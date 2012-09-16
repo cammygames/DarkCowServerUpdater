@@ -213,7 +213,6 @@ public static boolean deleteFile(String loc,String file,boolean backup)
  * @param destFile
  * @throws IOException
  */
-@SuppressWarnings("resource")
 public static boolean copyFile(File sourceFile, File destFile) throws IOException 
 {
 	if (!sourceFile.exists()) {

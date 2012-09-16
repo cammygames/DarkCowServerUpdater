@@ -4,28 +4,34 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
 import common.FileManager.FileManager;
 import common.FileManager.ListProcessor;
 
+@SuppressWarnings("all")
 public class GUIMain extends JFrame implements ActionListener {
-	
+
     private ScrollPane consoleOut = new ScrollPane();
     private JPanel infoPanel;
-    private JMenuBar menuBar;
-    private JMenu menuButton1;
-    private JMenu menuButton2;
-    private JMenu menuButton3;
+    private JToolBar toolBar;
+    private JButton launchMc;
+    private JButton credits;
     private JButton update;
     private JPanel webPanel;
+    private JButton jButton1;
     private JTextArea consoleOut1 = new JTextArea(30,100);
     
     private boolean canUpdate = false;
     private boolean modsUpdate = false;
+    private boolean canLaunch = false;
 	private static final long serialVersionUID = 2696364157973172973L;
-	
+
     public GUIMain() {
     	
         initComponents();
@@ -48,7 +54,7 @@ public class GUIMain extends JFrame implements ActionListener {
 				}
 				else
 				{
-					JOptionPane.showMessageDialog(null, "Updater need to be in .minecraft directory to function");
+					JOptionPane.showMessageDialog(null, "Updater needs to be in .minecraft directory to function");
 					update.setEnabled(false);
 				}
 			}
@@ -58,23 +64,9 @@ public class GUIMain extends JFrame implements ActionListener {
 				{
 					update.setEnabled(false);
 					boolean pp = triggerUpdate();
+					modsUpdate = true;
 					update.setEnabled(true);
-					if(pp)
-					{
-						update.setText("Start");
-						modsUpdate = true;
-						addToConsole("Sorry minecraft can't be started from updater yet");
-						update.setEnabled(false);
-					}
-					else
-					{
-						update.setText("retry");
-						modsUpdate = false;
-						canUpdate = false;
-						
-					}
-					
-					
+					canLaunch = pp;
 				}
 				else
 				{
@@ -82,7 +74,49 @@ public class GUIMain extends JFrame implements ActionListener {
 				}
 			}
 		}
-	}
+		if(event.getSource() == credits){
+
+			JOptionPane.showMessageDialog(null, "Made by DarkGuardsman");
+
+		}
+
+		if(event.getSource() == launchMc)
+		{
+			try
+			{
+				this.addToConsole("Attempting to launch Minecraft");
+				openMC();
+			}catch(Exception e){
+
+				e.printStackTrace();
+				this.addToConsole("Failed to launch Minecraft");
+			}
+		}
+	}   
+    public void openMC()
+    {
+    	//"http://s3.amazonaws.com/MinecraftDownload/launcher/minecraft.jar"
+    	File file = new File(FileManager.updaterDir+"/Minecraft.jar");
+    	if(file.exists())
+    	{
+    		try {
+    			ProcessBuilder pb = new ProcessBuilder("java","-Xmx1024M", "-Xms512M", "-cp", FileManager.updaterDir+"/Minecraft.jar", "net.minecraft.LauncherFrame");
+    			Process process = pb.start();
+    		} catch (IOException e) {e.printStackTrace();}	
+    		
+    	}
+    	else
+    	{
+    		Download.downloadFile("http://s3.amazonaws.com/MinecraftDownload/launcher/minecraft.jar", FileManager.updaterDir, "/Minecraft.jar", "url");
+    		if(file.exists())
+        	{
+    			openMC();
+        	}
+    		
+    	}
+	    
+	    System.exit(0);
+    }
     public void updateCheck()
     {
     	//check to make sure we have a base folder system to work out of
@@ -91,7 +125,7 @@ public class GUIMain extends JFrame implements ActionListener {
 		Boolean fileExist = FileManager.rootFileCheck();
     	if(fileExist)
 		{
-			
+
 			if(FileManager.errors.size() > 0)
 			{
 				addToConsole("Main file check Debug:");
@@ -153,10 +187,10 @@ public class GUIMain extends JFrame implements ActionListener {
         update = new JButton();
         webPanel = new JPanel();
         infoPanel = new JPanel();
-        menuBar = new JMenuBar();
-        menuButton1 = new JMenu();
-        menuButton2 = new JMenu();
-        menuButton3 = new JMenu();
+        toolBar = new JToolBar();
+        jButton1 = new JButton();
+        launchMc = new JButton();
+        credits = new JButton();
         
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ue Mod Downloader");
@@ -166,6 +200,7 @@ public class GUIMain extends JFrame implements ActionListener {
         
         update.addActionListener(this);
         update.setText("UpdateCheck");
+        
         consoleOut1.setEditable(false);
         consoleOut.add(consoleOut1);
         
@@ -175,11 +210,11 @@ public class GUIMain extends JFrame implements ActionListener {
         webPanel.setLayout(webPanelLayout);
         webPanelLayout.setHorizontalGroup(
             webPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 469, Short.MAX_VALUE)
         );
         webPanelLayout.setVerticalGroup(
             webPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 345, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         infoPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
@@ -188,46 +223,63 @@ public class GUIMain extends JFrame implements ActionListener {
         infoPanel.setLayout(infoPanelLayout);
         infoPanelLayout.setHorizontalGroup(
             infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 159, Short.MAX_VALUE)
         );
         infoPanelLayout.setVerticalGroup(
             infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 418, Short.MAX_VALUE)
         );
 
-        menuButton1.setText("UpdateCheck");
-        menuBar.add(menuButton1);
+        toolBar.setRollover(true);
 
-        menuButton2.setText("WebSite");
-        menuBar.add(menuButton2);
+        jButton1.addActionListener(this);
+        launchMc.addActionListener(this);
+        credits.addActionListener(this);        
+        
+        jButton1.setText("Download Mods");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(jButton1);
 
-        menuButton3.setText("Credits");
-        menuBar.add(menuButton3);
+        launchMc.setText("Launch Minecraft");
+        launchMc.setFocusable(false);
+        launchMc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        launchMc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(launchMc);
 
-        setJMenuBar(menuBar);
-
+        credits.setText("Credits");
+        credits.setFocusable(false);
+        credits.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        credits.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBar.add(credits);
+        
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(webPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(consoleOut, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+                    .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(webPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(consoleOut, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(webPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(webPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(consoleOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
