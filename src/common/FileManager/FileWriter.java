@@ -13,24 +13,29 @@ import java.util.List;
  * txt righter sourced from http://www.javapractices.com/topic/TopicAction.do?Id=42
  *
  */
-public class FileWriter {
-	final static String FILE_NAME = "C:\\Temp\\input.txt";
-	  final static String OUTPUT_FILE_NAME = "C:\\Temp\\output.txt";
-	  final static Charset ENCODING = StandardCharsets.UTF_8;
+public class FileWriter 
+{
+	  	final static String FILE_NAME = "C:\\Temp\\input.txt";
+	  	final static String OUTPUT_FILE_NAME = "C:\\Temp\\output.txt";
+	  	final static Charset ENCODING = StandardCharsets.UTF_8;
 	  
 	  //For smaller files
 	  
-	 public static List<String> readSmallTextFile(String aFileName) throws IOException {
+	 public static List<String> readSmallTextFile(String aFileName) throws IOException 
+	 {
 	    Path path = Paths.get(aFileName);
 	    return Files.readAllLines(path, ENCODING);
 	  }
 	  
-	  void writeSmallTextFile(List<String> aLines, String aFileName) throws IOException {
+	  void writeSmallTextFile(List<String> aLines, String aFileName) throws IOException 
+	  {
 	    Path path = Paths.get(aFileName);
 	    Files.write(path, aLines, ENCODING);
 	  }
+	  
 	  @SuppressWarnings("unused")
-	private static void log(Object aMsg){
+	  private static void log(Object aMsg)
+	  {
 	    System.out.println(String.valueOf(aMsg));
 	  }
 }

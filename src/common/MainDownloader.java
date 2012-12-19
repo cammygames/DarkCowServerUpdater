@@ -1,6 +1,6 @@
 package common;
 
-public class Main {
+public class MainDownloader {
 	
 	public final static String MasterUser = ""; //too prevent people from stealing only added on compile
 	public final static String MasterPass = "";

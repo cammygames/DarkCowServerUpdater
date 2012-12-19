@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -15,15 +16,16 @@ import common.FileManager.FileManager;
 import common.FileManager.ListProcessor;
 
 @SuppressWarnings("all")
-public class GUIMain extends JFrame implements ActionListener {
+public class GUIMain extends JFrame implements ActionListener 
+{
 
     private ScrollPane consoleOut = new ScrollPane();
-    private JPanel infoPanel;
+   // private JPanel infoPanel;
     private JToolBar toolBar;
     private JButton launchMc;
     private JButton credits;
     private JButton update;
-    private JPanel webPanel;
+    private JEditorPane webPanel;
     private JButton jButton1;
     private JTextArea consoleOut1 = new JTextArea(30,100);
     
@@ -32,11 +34,13 @@ public class GUIMain extends JFrame implements ActionListener {
     private boolean canLaunch = false;
 	private static final long serialVersionUID = 2696364157973172973L;
 
-    public GUIMain() {
+    public GUIMain() 
+    {
     	
         initComponents();
         this.setResizable(false);
     }
+    
     @Override
 	public void actionPerformed(ActionEvent event) 
 	{
@@ -85,6 +89,7 @@ public class GUIMain extends JFrame implements ActionListener {
 				openMC();
 		}
 	}   
+    
     public void openMC()
     {
     	File file = new File(FileManager.updaterDir+"/Launcher.jar");
@@ -110,10 +115,12 @@ public class GUIMain extends JFrame implements ActionListener {
     		
     	}
     }
+    
     public void updateCheck()
     {
     	//check to make sure we have a base folder system to work out of
     	//Normally will generate files it need if not something is wrong
+    	
     	addToConsole("Checking File System");
 		Boolean fileExist = FileManager.rootFileCheck();
     	if(fileExist)
@@ -155,6 +162,7 @@ public class GUIMain extends JFrame implements ActionListener {
 			}
 		}	
     }
+    
     public boolean triggerUpdate()
     {
     	
@@ -170,26 +178,28 @@ public class GUIMain extends JFrame implements ActionListener {
 			}
 			return updatedAll;
     }
+    
     public void addToConsole(String msg)
 	{
     	String content = consoleOut1.getText();
     	consoleOut1.setText(content + "\n"+ msg);
 	}
-    private void initComponents() {
+    
+    private void initComponents() 
+    {
 
         update = new JButton();
-        webPanel = new JPanel();
-        infoPanel = new JPanel();
+        webPanel = new JEditorPane();
         toolBar = new JToolBar();
         jButton1 = new JButton();
         launchMc = new JButton();
         credits = new JButton();
+        JScrollPane scrollPane = new JScrollPane(webPanel);
         
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ue Mod Downloader");
         setBackground(new java.awt.Color(0, 75, 223));
-        setBounds(new java.awt.Rectangle(0, 0, 200, 520));
-        setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        setBounds(new java.awt.Rectangle(0, 0, 520, 520));
+        setName("ueUpdater"); // NOI18N
         
         update.addActionListener(this);
         update.setText("UpdateCheck");
@@ -198,31 +208,27 @@ public class GUIMain extends JFrame implements ActionListener {
         consoleOut.add(consoleOut1);
         
         webPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        javax.swing.GroupLayout webPanelLayout = new javax.swing.GroupLayout(webPanel);
-        webPanel.setLayout(webPanelLayout);
-        webPanelLayout.setHorizontalGroup(
-            webPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 469, Short.MAX_VALUE)
-        );
-        webPanelLayout.setVerticalGroup(
-            webPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        infoPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
-        infoPanel.setLayout(infoPanelLayout);
-        infoPanelLayout.setHorizontalGroup(
-            infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 159, Short.MAX_VALUE)
-        );
-        infoPanelLayout.setVerticalGroup(
-            infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 418, Short.MAX_VALUE)
-        );
-
+        webPanel.setEditable(false);
+        	try 
+        	{
+        		webPanel.setContentType("text/html");
+        		//webPanel.setText("<html><a href='http:'//jenkins.calclavia.com:8080/' id='Jenins'><input type ='button' value='Jenkins'></a></html>");
+        		webPanel.setPage("http://calclavia.com/");
+        	}catch (Exception e)
+        	{
+            }
+       
+            javax.swing.GroupLayout webPanelLayout = new javax.swing.GroupLayout(webPanel);
+            webPanel.setLayout(webPanelLayout);
+            webPanelLayout.setHorizontalGroup(
+                webPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(0, 0, Short.MAX_VALUE)
+            );
+            webPanelLayout.setVerticalGroup(
+                webPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(0, 418, Short.MAX_VALUE)
+            );
+            
         toolBar.setRollover(true);
 
         jButton1.addActionListener(this);
@@ -254,15 +260,12 @@ public class GUIMain extends JFrame implements ActionListener {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(webPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(consoleOut, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE))
+                        .addComponent(consoleOut, javax.swing.GroupLayout.PREFERRED_SIZE, 475, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))))
+                        .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -270,16 +273,18 @@ public class GUIMain extends JFrame implements ActionListener {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(infoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(webPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(consoleOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(28, 28, 28))
         );
-
         pack();
     }
+
+	private URL getResource(String string) 
+	{
+		return null;
+	}
 }
