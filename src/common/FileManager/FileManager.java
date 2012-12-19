@@ -36,83 +36,108 @@ public class FileManager
 
     public static boolean inMC = false;
 
+    /**
+     * looks at what mods are installed by file name
+     */
+    public static void getInstalledMods()
+    {
+        try
+        {
+            installedMods = new ArrayList<File>();
+            installedMods.addAll(getFileList(modsDir, ".zip"));
+            installedMods.addAll(getFileList(modsDir, ".jar"));
+            errors.add(installedMods.size() + " Installed mods");
+
+            installedCoreMods = new ArrayList<File>();
+            installedCoreMods.addAll(getFileList(coremodsDir, ".zip"));
+            installedCoreMods.addAll(getFileList(coremodsDir, ".jar"));
+            errors.add(installedMods.size() + " Installed coremods");
+        }
+        catch (Exception e)
+        {
+            errors.add("error getting mods installed");
+            e.printStackTrace();
+        }
+    }
+    public static void getStoredMods()
+    {
+        modsStored.addAll(getFileList(modTemp, ".zip"));
+        modsStored.addAll(getFileList(modTemp, ".jar"));
+        modsStored.addAll(getFileList(coremodTemp, ".zip"));
+        modsStored.addAll(getFileList(coremodTemp, ".jar"));
+        errors.add(modsStored.size() + " Mods Stored for use");
+    }
+
+    /**
+     * Checks the main file system for all folders also does basic check to see
+     * if it can update
+     * 
+     * @return
+     */
     public static boolean rootFileCheck()
     {
-        //mods folder
+        // mods folder
         if (!folderCreator(dir, "mods"))
         {
             errors.add("Missing mods folder");
             return false;
         }
-        else
-        {
-
-            installedMods = getFileList(modsDir, ".zip") != null ? getFileList(modsDir, ".zip") : new ArrayList<File>();
-            errors.add(installedMods.size() + " Installed mods");
-        }
-        //core mods folder
+        // core mods folder
         if (!folderCreator(dir, "coremods"))
         {
             errors.add("Missing coremods folder");
             return false;
         }
-        else
-        {
-
-            installedCoreMods = getFileList(coremodsDir, ".zip") != null ? getFileList(coremodsDir, ".zip") : new ArrayList<File>();
-            errors.add(installedMods.size() + " Installed coremods");
-        }
-        //updater folder
+        // updater folder
         if (!folderCreator(dir, "Updater"))
         {
             errors.add("Missing Update folder");
             return false;
         }
+        FileManager.getInstalledMods();
+        // checks for updates/mods folder which is used to temp store mods
+        if (!folderCreator(dir + "/Updater/", "mods"))
+        {
+            errors.add("Missing update/mods folder");
+            return false;
+        }
+        if (!folderCreator(dir + "/Updater/", "coremods"))
+        {
+            errors.add("Missing update/coremods folder");
+            return false;
+        }
+        FileManager.getStoredMods();
+        // checks for updates/jar folder which stores minecraft.jar backup
+        if (!folderCreator(updaterDir, "jars"))
+        {
+            errors.add("Missing Update/jars folder");
+        }
         else
         {
-            // checks for updates/mods folder which is used to temp store mods
-            if (!folderCreator(dir + "/Updater/", "mods"))
+            File file = new File(updaterDir + "/jars/minecraft.jar");
+            if (!file.exists())
             {
-                errors.add("Missing update/mods folder");
+                errors.add("Missing minecraft.jar Launcher");
+                // TODO add code to copy or download minecraft.jar
             }
             else
             {
+                mc = file;
+            }
 
-                modsStored = getFileList(modTemp, ".zip") != null ? getFileList(modTemp, ".zip") : new ArrayList<File>();
-                errors.add(modsStored.size() + " Mods Stored for use");
-            }
-            // checks for updates/jar folder which stores minecraft.jar backup
-            if (!folderCreator(updaterDir, "jars"))
-            {
-                errors.add("Missing Update/jars folder");
-            }
-            else
-            {
-                File file = new File(updaterDir + "/jars/minecraft.jar");
-                if (!file.exists())
-                {
-                    errors.add("Missing minecraft.jar");
-                    errors.add("please run minecraft & install forge");
-                    // TODO add code to copy or download minecraft.jar
-                }
-                else
-                {
-                    mc = file;
-                }
-
-            }
-            // checks for update/jarMods folder which stores mod that are
-            // injected into the client
-            if (!folderCreator(dir + "/Updater/", "jarMods"))
-            {
-                errors.add("Missing Update/jarMods folder");
-            }
-            else
-            {
-                jarMods = getFileList(updaterDir + "jarMods", ".zip");
-                errors.add(jarMods.size() + " jarMods Stored for use");
-            }
         }
+        // checks for update/jarMods folder which stores mod that are
+        // injected into the client
+        if (!folderCreator(dir + "/Updater/", "jarMods"))
+        {
+            errors.add("Missing Update/jarMods folder");
+        }
+        else
+        {
+            jarMods = getFileList(updaterDir + "jarMods", ".zip");
+            errors.add(jarMods.size() + " jarMods Stored for use");
+        }
+
         if (!folderCreator(dir, "bin"))
         {
             errors.add("Missing bin folder");

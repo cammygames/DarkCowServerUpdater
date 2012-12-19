@@ -7,14 +7,14 @@ public class ModInstance
      */
     public enum fileType
     {
-        General("mods","mods"), Core("coremods","coremods"), Jar("bin/minecraft.jar","jars");
+        General("mods", "mods"), Core("coremods", "coremods"), Jar("bin/minecraft.jar", "jars");
         public String output;
         public String storage;
 
         private fileType(String outputMain, String outputStorage)
         {
             this.output = outputMain;
-            this.storage= outputStorage;
+            this.storage = outputStorage;
         }
     }
 
@@ -50,22 +50,58 @@ public class ModInstance
         this.dType = dType;
         this.url = url;
     }
+
     /**
-     * Converts the string form of a mod from the mod list
-     * to a ModInstance for processing
+     * Converts the string form of a mod from the mod list to a ModInstance for
+     * processing
      */
     public static ModInstance convertString(String line)
     {
+
+        String[] modString = line.split(";");
+        fileType type = fileType.General;
+        downloadType dType = downloadType.URL;
         try
         {
-            String[] modString = line.split(";");
             int var2 = Integer.parseInt(modString[1]);
-            int var3 = Integer.parseInt(modString[2]);
-            return new ModInstance(modString[0],fileType.values()[var2], downloadType.values()[var3], modString[3]);
+            type = fileType.values()[var2];
         }
         catch (Exception e)
         {
-            return null;
+            if(modString[1].equalsIgnoreCase("mods"))
+            {
+                type = fileType.General;
+            }
+            if(modString[1].equalsIgnoreCase("core"))
+            {
+                type = fileType.Core;
+            }
+            if(modString[1].equalsIgnoreCase("jar"))
+            {
+                type = fileType.Jar;
+            }
         }
+        try
+        {
+            int var3 = Integer.parseInt(modString[2]);
+            dType = downloadType.values()[var3];
+        }
+        catch (Exception e)
+        {
+            if(modString[2].equalsIgnoreCase("url"))
+            {
+                dType = downloadType.URL;
+            }
+            if(modString[2].equalsIgnoreCase("ftp"))
+            {
+                dType = downloadType.FTP;
+            }
+            if(modString[2].equalsIgnoreCase("sftp"))
+            {
+                dType = downloadType.SFTP;
+            }
+        }
+        return new ModInstance(modString[0], type, dType, modString[3]);
+
     }
 }

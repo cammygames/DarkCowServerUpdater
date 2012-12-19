@@ -39,6 +39,8 @@ public class GUIMain extends JFrame implements ActionListener
     	
         initComponents();
         this.setResizable(false);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
     }
     
     @Override

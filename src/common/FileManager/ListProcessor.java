@@ -71,8 +71,8 @@ public class ListProcessor
      */
     public static void processDownlaod(ModInstance modInstance) throws IOException
     {
-        File currentMod = new File(FileManager.dir + "/" + modInstance.type.output + "/" + modInstance.modName);
-        File storedMod = new File(FileManager.updaterDir + "/" + modInstance.type.storage + "/" + modInstance.modName);
+        File currentMod = new File(FileManager.dir + "/" + modInstance.type.output + "/", modInstance.modName);
+        File storedMod = new File(FileManager.updaterDir + "/" + modInstance.type.storage + "/", modInstance.modName);
 
         if (!currentMod.exists() || !FileManager.installedMods.contains(currentMod))
         {
@@ -90,7 +90,7 @@ public class ListProcessor
             else
             {
 
-                File downloaded = Download.downloadFile(modInstance.url, FileManager.updaterDir + "/" + modInstance.type.storage, modInstance.modName, "url");
+                File downloaded = Download.downloadFile(modInstance.url, FileManager.updaterDir + "/" + modInstance.type.storage+"/", modInstance.modName, "url");
                 if (downloaded != null && downloaded.exists())
                 {
                     debug.add("Downloaded " + modInstance.modName + " to updater/mods");
