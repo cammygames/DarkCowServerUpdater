@@ -19,16 +19,15 @@ import common.FileManager.ListProcessor;
 public class GUIMain extends JFrame implements ActionListener 
 {
 
-    private ScrollPane consoleOut = new ScrollPane();
-   // private JPanel infoPanel;
-    private JToolBar toolBar;
-    private JButton launchMc;
-    private JButton credits;
+	private JButton downloadMods;
+    private JScrollPane jScrollPane1;
+    private JScrollPane jScrollPane2;
+    private JTextArea consoleOut;
+    private JButton minecraft;
     private JButton update;
-    private JEditorPane webPanel;
-    private JButton jButton1;
-    private JTextArea consoleOut1 = new JTextArea(30,100);
-    
+    private JEditorPane webPane;
+    private JLabel jLabel1;
+
     private boolean canUpdate = false;
     private boolean modsUpdate = false;
     private boolean canLaunch = false;
@@ -80,13 +79,7 @@ public class GUIMain extends JFrame implements ActionListener
 				}
 			}
 		}
-		if(event.getSource() == credits){
-
-			JOptionPane.showMessageDialog(null, "Made by DarkGuardsman");
-
-		}
-
-		if(event.getSource() == launchMc)
+		if(event.getSource() == minecraft)
 		{
 				openMC();
 		}
@@ -183,105 +176,88 @@ public class GUIMain extends JFrame implements ActionListener
     
     public void addToConsole(String msg)
 	{
-    	String content = consoleOut1.getText();
-    	consoleOut1.setText(content + "\n"+ msg);
+    	String content = consoleOut.getText();
+    	consoleOut.setText(content + "\n"+ msg);
 	}
     
     private void initComponents() 
     {
 
+        jScrollPane1 = new JScrollPane();
+        webPane = new JEditorPane();
         update = new JButton();
-        webPanel = new JEditorPane();
-        toolBar = new JToolBar();
-        jButton1 = new JButton();
-        launchMc = new JButton();
-        credits = new JButton();
-        JScrollPane scrollPane = new JScrollPane(webPanel);
-        
-        setTitle("Ue Mod Downloader");
-        setBackground(new java.awt.Color(0, 75, 223));
-        setBounds(new java.awt.Rectangle(0, 0, 520, 520));
-        setName("ueUpdater"); // NOI18N
-        
+        jScrollPane2 = new JScrollPane();
+        consoleOut = new JTextArea();
+        minecraft = new JButton();
+        downloadMods = new JButton();
+        jLabel1 = new JLabel();
+
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(102, 102, 102));
+
+        webPane.setEditable(false);
+        jScrollPane1.setViewportView(webPane);
+    	try 
+    	{
+    		webPane.setContentType("text/html");
+    		webPane.setPage(FileManager.webURl);
+    	}catch (Exception e)
+    	{
+    		e.printStackTrace();
+        }
+
+        update.setText("Update Check");
         update.addActionListener(this);
-        update.setText("UpdateCheck");
         
-        consoleOut1.setEditable(false);
-        consoleOut.add(consoleOut1);
-        
-        webPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        webPanel.setEditable(false);
-        	try 
-        	{
-        		webPanel.setContentType("text/html");
-        		//webPanel.setText("<html><a href='http:'//jenkins.calclavia.com:8080/' id='Jenins'><input type ='button' value='Jenkins'></a></html>");
-        		webPanel.setPage("http://calclavia.com/");
-        	}catch (Exception e)
-        	{
-            }
-       
-            javax.swing.GroupLayout webPanelLayout = new javax.swing.GroupLayout(webPanel);
-            webPanel.setLayout(webPanelLayout);
-            webPanelLayout.setHorizontalGroup(
-                webPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGap(0, 0, Short.MAX_VALUE)
-            );
-            webPanelLayout.setVerticalGroup(
-                webPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGap(0, 418, Short.MAX_VALUE)
-            );
-            
-        toolBar.setRollover(true);
+        consoleOut.setEditable(false);
+        consoleOut.setColumns(20);
+        consoleOut.setRows(5);
+        jScrollPane2.setViewportView(consoleOut);
 
-        jButton1.addActionListener(this);
-        launchMc.addActionListener(this);
-        credits.addActionListener(this);        
+        minecraft.setText("Launch Minecraft");
+        minecraft.addActionListener(this);
         
-        jButton1.setText("Download Mods");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(jButton1);
+        downloadMods.setText("Download Mods");
 
-        launchMc.setText("Launch Minecraft");
-        launchMc.setFocusable(false);
-        launchMc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        launchMc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(launchMc);
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/common/update.png")));
 
-        credits.setText("Credits");
-        credits.setFocusable(false);
-        credits.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        credits.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolBar.add(credits);
-        
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(consoleOut, javax.swing.GroupLayout.PREFERRED_SIZE, 475, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)))
+                        .addComponent(update, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(minecraft, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(downloadMods, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2)
+                    .addComponent(jLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(consoleOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(update, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(28, 28, 28))
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 310, GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                            .addComponent(update, GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
+                            .addComponent(minecraft, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(downloadMods, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1))
+                .addContainerGap())
         );
+
         pack();
     }
 

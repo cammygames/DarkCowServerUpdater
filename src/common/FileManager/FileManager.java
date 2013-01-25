@@ -22,6 +22,7 @@ public class FileManager
     public static String modTemp = updaterDir + "/mods";
     public static String coremodTemp = updaterDir + "/coremods";
     public static String updateURl = "https://dl.dropbox.com/u/70622753/updater/ModList.list.txt";
+    public static String webURl = "https://dl.dropbox.com/u/58652722/test.html";
 
     public static List<File> modsStored = new ArrayList<File>();
     public static List<File> jarMods = new ArrayList<File>();
@@ -216,6 +217,48 @@ public class FileManager
             if (NmodList != null && NmodList.exists())
             {
                 System.out.print("Downloaded Mod list \n");
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static boolean updatewebList()
+    {
+        // Download mod list
+        if (modList.exists())
+        {
+            try
+            {
+                if (oldList.exists())
+                {
+                    FileManager.deleteFile(FileManager.updaterDir, "/test.html.backup", false);
+                }
+                Boolean cc = FileManager.copyFile(modList, new File(modList + ".backup"));
+                if (cc)
+                {  
+                    File NmodList = Download.downloadFromUrl(updateURl, FileManager.updaterDir, "/test.html");
+                    if (NmodList != null && NmodList.exists())
+                    {
+                        modList = NmodList;
+                        return true;
+                    }
+                    else
+                    {
+                        oldList.renameTo(new File(FileManager.updaterDir + "/test.html"));
+                    }
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            File NmodList = Download.downloadFromUrl(updateURl, FileManager.updaterDir, "/test.html");
+            if (NmodList != null && NmodList.exists())
+            {
                 return true;
             }
         }
